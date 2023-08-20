@@ -1,0 +1,69 @@
+import tkinter as tk
+from tkinter import messagebox
+import string
+import random
+
+class PasswordGeneratorApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Password Generator")
+
+        self.strength_var = tk.StringVar()
+        self.strength_var.set("medium")
+
+        self.length_label = tk.Label(root, text="Password Length:")
+        self.length_label.pack()
+
+        self.length_entry = tk.Entry(root)
+        self.length_entry.pack()
+
+        self.strength_label = tk.Label(root, text="Password Strength:")
+        self.strength_label.pack()
+
+        self.strength_low = tk.Radiobutton(root, text="Low", variable=self.strength_var, value="low")
+        self.strength_low.pack()
+
+        self.strength_medium = tk.Radiobutton(root, text="Medium", variable=self.strength_var, value="medium")
+        self.strength_medium.pack()
+
+        self.strength_high = tk.Radiobutton(root, text="High", variable=self.strength_var, value="high")
+        self.strength_high.pack()
+
+        self.generate_button = tk.Button(root, text="Generate Password", command=self.generate_password)
+        self.generate_button.pack()
+
+        self.password_label = tk.Label(root, text="")
+        self.password_label.pack()
+
+    def generate_password(self):
+        try:
+            password_length = int(self.length_entry.get())
+            if password_length <= 0:
+                messagebox.showerror("Error", "Password length should be a positive number.")
+                return
+
+            strength = self.strength_var.get()
+            characters = ""
+
+            if strength == "low":
+                characters = string.ascii_letters + string.digits
+            elif strength == "medium":
+                characters = string.ascii_letters + string.digits + string.punctuation
+            elif strength == "high":
+                characters = string.ascii_letters + string.digits + string.punctuation + string.ascii_uppercase
+            else:
+                messagebox.showerror("Error", "Invalid password strength.")
+                return
+
+            password = ''.join(random.choice(characters) for _ in range(password_length))
+            self.password_label.config(text="Generated password: " + password)
+        except ValueError:
+            messagebox.showerror("Error", "Please enter a valid number for the password length.")
+
+def main():
+    root = tk.Tk()
+    app = PasswordGeneratorApp(root)
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
